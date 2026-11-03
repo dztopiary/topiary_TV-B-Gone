@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 480" width="760" height="480" font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="760" height="480" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="380" y="42" text-anchor="middle" font-size="22" font-weight="700" fill="#1a1a1a">TV-B-Gone — Minimal Wiring</text>
+  <text x="380" y="66" text-anchor="middle" font-size="13" fill="#555">ESP32-S3 SuperMini + 940 nm IR LED module, battery-powered</text>
+
+  <!-- ============ Battery block (left) ============ -->
+  <rect x="60" y="150" width="170" height="210" rx="10" fill="#eef3ff" stroke="#3b5bdb" stroke-width="2"/>
+  <text x="145" y="180" text-anchor="middle" font-size="16" font-weight="700" fill="#1a3fa0">Battery</text>
+  <!-- battery symbol -->
+  <g stroke="#3b5bdb" stroke-width="2.5" fill="none">
+    <line x1="108" y1="205" x2="108" y2="340"/>
+    <line x1="96" y1="218" x2="120" y2="218"/>
+    <line x1="99" y1="238" x2="117" y2="238" stroke-width="4"/>
+    <line x1="96" y1="258" x2="120" y2="258"/>
+    <line x1="99" y1="278" x2="117" y2="278" stroke-width="4"/>
+    <line x1="96" y1="298" x2="120" y2="298"/>
+    <line x1="99" y1="318" x2="117" y2="318" stroke-width="4"/>
+  </g>
+  <!-- Switch on the + rail -->
+  <circle cx="108" cy="205" r="4" fill="#ffffff" stroke="#c92a2a" stroke-width="2.5"/>
+  <line x1="108" y1="205" x2="135" y2="196" stroke="#c92a2a" stroke-width="2.5"/>
+  <circle cx="135" cy="196" r="3" fill="#c92a2a"/>
+  <text x="148" y="170" font-size="13" font-weight="700" fill="#c92a2a">S1</text>
+  <text x="150" y="186" font-size="11" fill="#c92a2a">power switch</text>
+
+  <!-- + rail from battery through switch to ESP -->
+  <line x1="135" y1="196" x2="170" y2="196" stroke="#e8590c" stroke-width="3"/>
+  <line x1="170" y1="196" x2="300" y2="196" stroke="#e8590c" stroke-width="3"/>
+
+  <!-- - rail from battery to ESP -->
+  <line x1="108" y1="340" x2="170" y2="340" stroke="#1a1a1a" stroke-width="3"/>
+  <line x1="170" y1="340" x2="300" y2="340" stroke="#1a1a1a" stroke-width="3"/>
+
+  <!-- ============ ESP32-S3 SuperMini (center) ============ -->
+  <rect x="300" y="150" width="180" height="210" rx="6" fill="#f4fbf4" stroke="#2b8a3e" stroke-width="2.5"/>
+  <text x="390" y="178" text-anchor="middle" font-size="16" font-weight="700" fill="#1c6b30">ESP32-S3 SuperMini</text>
+
+  <!-- pin labels: left column -->
+  <g font-size="12.5" fill="#1a1a1a">
+    <text x="312" y="200" font-weight="700" fill="#c92a2a">5V / VIN</text>
+    <text x="312" y="248">GPIO4 (D4)</text>
+    <text x="312" y="300">GND</text>
+  </g>
+
+  <!-- pin stubs -->
+  <line x1="300" y1="196" x2="285" y2="196" stroke="#e8590c" stroke-width="3"/>
+  <circle cx="300" cy="196" r="4.5" fill="#e8590c"/>
+
+  <line x1="300" y1="244" x2="285" y2="244" stroke="#7048b8" stroke-width="3"/>
+  <circle cx="300" cy="244" r="4.5" fill="#7048b8"/>
+
+  <line x1="300" y1="340" x2="285" y2="340" stroke="#1a1a1a" stroke-width="3"/>
+  <circle cx="300" cy="340" r="4.5" fill="#1a1a1a"/>
+
+  <!-- ============ IR LED module (right) ============ -->
+  <rect x="480" y="150" width="220" height="210" rx="6" fill="#fff7f0" stroke="#e8590c" stroke-width="2.5"/>
+  <text x="590" y="178" text-anchor="middle" font-size="16" font-weight="700" fill="#b3400a">IR LED module</text>
+  <text x="590" y="200" text-anchor="middle" font-size="12.5" fill="#8a5a2b">940 nm · 1 W / 3 W (3-pin)</text>
+
+  <!-- IR emitter lens -->
+  <circle cx="590" cy="260" r="34" fill="#fde3c8" stroke="#e8590c" stroke-width="2"/>
+  <circle cx="590" cy="260" r="18" fill="#ff8787" opacity="0.5"/>
+  <!-- IR rays -->
+  <g stroke="#fa5252" stroke-width="2.5" stroke-linecap="round">
+    <line x1="632" y1="240" x2="662" y2="228"/>
+    <line x1="638" y1="260" x2="670" y2="260"/>
+    <line x1="632" y1="280" x2="662" y2="292"/>
+  </g>
+
+  <!-- module pins -->
+  <g font-size="12.5">
+    <text x="492" y="200" font-weight="700" fill="#c92a2a">5V</text>
+    <text x="492" y="248" font-weight="700" fill="#7048b8">Signal (IN)</text>
+    <text x="492" y="300" font-weight="700">GND</text>
+  </g>
+
+  <!-- ============ Wires between ESP and module ============ -->
+  <!-- 5V rail: battery->ESP already; extend to module top -->
+  <line x1="480" y1="196" x2="390" y2="196" stroke="#e8590c" stroke-width="3"/>
+  <circle cx="480" cy="196" r="4.5" fill="#e8590c"/>
+
+  <!-- GND rail to module -->
+  <line x1="480" y1="340" x2="390" y2="340" stroke="#1a1a1a" stroke-width="3"/>
+  <circle cx="480" cy="340" r="4.5" fill="#1a1a1a"/>
+
+  <!-- Signal wire: ESP GPIO4 -> module IN -->
+  <path d="M 300 244 L 260 244 L 260 400 L 590 400 L 590 294" fill="none" stroke="#7048b8" stroke-width="3"/>
+  <circle cx="590" cy="294" r="4.5" fill="#7048b8"/>
+
+  <!-- Legend -->
+  <g font-size="12">
+    <line x1="60" y1="440" x2="95" y2="440" stroke="#e8590c" stroke-width="3"/><text x="102" y="444" fill="#333">Power (5 V)</text>
+    <line x1="200" y1="440" x2="235" y2="440" stroke="#7048b8" stroke-width="3"/><text x="242" y="444" fill="#333">IR signal (GPIO4 → IN)</text>
+    <line x1="430" y1="440" x2="465" y2="440" stroke="#1a1a1a" stroke-width="3"/><text x="472" y="444" fill="#333">GND (common)</text>
+  </g>
+</svg>
