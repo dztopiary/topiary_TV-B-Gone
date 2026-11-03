@@ -70,8 +70,12 @@ topiaryTVBGONE/
 ├─ README.md
 ├─ .gitignore
 ├─ docs/
-│  └─ schematic.svg     # wiring diagram (renders on GitHub)
-└─ firmware/            # PlatformIO project
+│  └─ schematic.png     # wiring diagram (renders on GitHub)
+├─ dist/                # prebuilt firmware + one-click flasher for Windows
+│  ├─ esp-flash-tool/Flash-TV-B-Gone.bat
+│  ├─ flash-config.json
+│  └─ firmware/          # tv-b-gone-v1.0.bin, bootloader.bin, partitions.bin
+└─ firmware/            # PlatformIO project (source)
    ├─ platformio.ini
    ├─ LICENSE
    └─ src/
@@ -81,7 +85,14 @@ topiaryTVBGONE/
 
 Build artifacts under `firmware/.pio` and generated VS Code files are gitignored.
 
-## Build & flash
+## Flash it without installing anything (easiest)
+
+If you just want to get this running on your board, grab the [dist/ package](dist/) —
+prebuilt `.bin` files plus a one-click Windows batch script and an
+[ESP Flash Download Tool](https://www.espressif.com/en/support/download/other-tools)
+config. No PlatformIO or VS Code required.
+
+## Build & flash (from source)
 
 You'll need [PlatformIO](https://platformio.org/) (CLI, or the VS Code extension).
 The only dependency — `IRremoteESP8266` — is pulled from the registry on first build.

@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "description": "TV-B-Gone ESP32-S3 SuperMini - one-shot IR blast firmware v1.0",
+  "chip_name": "ESP32-S3",
+  "flash_mode": "DIO",
+  "flash_frequency": "80m",
+  "flash_size": "4MB",
+  "baud_rate": 921600,
+  "erase_all": true,
+  "segments": [
+    { "address": "0x0",      "path": "firmware/bootloader.bin" },
+    { "address": "0x8000",   "path": "firmware/partitions.bin" },
+    { "address": "0x10000",  "path": "firmware/tv-b-gone-v1.0.bin" }
+  ]
+}
