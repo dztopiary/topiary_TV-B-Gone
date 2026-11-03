@@ -36,7 +36,9 @@ No infinite loop.
 | 940 nm high-power IR LED module (1 W / 3 W), 3-pin: 5V / GND / Signal | The emitter |
 | Battery + on/off switch | Powers everything; the switch is your button |
 
-Wiring (see [docs/schematic.png](docs/schematic.png)):
+Wiring:
+
+![Scheme](docs/schematic.png)
 
 ```
 ESP32-S3 SuperMini        IR LED module
