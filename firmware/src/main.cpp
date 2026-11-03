@@ -1,44 +1,35 @@
 /*
- * TV-B-GONE - Minimal one-shot ESP32-S3 SuperMini firmware
- * --------------------------------------------------------
- * Blasts universal power-off IR codes at TVs and projectors.
+ * TV-B-Gone for the ESP32-S3 SuperMini.
  *
- * Region: EU (Polska/Europe). The NA code bank from WORLD_IR_CODES.h is not
- * sent - it would only add ~3 s of transmission for devices outside Europe.
+ * Flip the power switch and it fires every IR "power off" code I could find,
+ * then goes to sleep. Point it at a room full of TVs/projectors and press
+ * once. No buttons, no screen - just battery + switch + one IR LED.
  *
- * Hardware (minimal):
- *   - ESP32-S3 SuperMini
- *   - High-power 940 nm IR LED module (1W / 3W) -> 5V / GND / Signal
- *     Wire the Signal pin to GPIO_IR below.
- *   - Battery + a simple on/off power switch feeding the ESP32-S3's Vin/3V3.
- *   - No buttons, no display, no SD card.
- *
- * Operation:
- *   Flip the power switch ON -> firmware boots and immediately sends every
- *   EU power code plus the universal parsed + raw sets (TVs AND projectors).
- *   The full blast takes ~5-7 s. When it finishes, the ESP32 enters deep
- *   sleep (near-zero draw) so the battery lasts; flip the switch OFF then ON
- *   to run it again. There is no infinite loop and nothing else to press.
+ * The NA code set in WORLD_IR_CODES.h is left out on purpose: I'm in Europe
+ * so those would only add a few seconds for nothing.
  */
 
 #include <Arduino.h>
 #include <IRsend.h>          // IRremoteESP8266
-#include "WORLD_IR_CODES.h"  // local copy of the code DB
+#include "WORLD_IR_CODES.h"  // the code database
 
-// ----------------------------- Pin map ------------------------------------
-static const int GPIO_IR = 4;   // D4 -> IR LED module signal pin
+// The signal pin on the IR LED module goes here (D4).
+static const int GPIO_IR = 4;
 
-// ----------------------------- Timing -------------------------------------
-static const uint32_t CODE_GAP_US = 20500;   // ~20.5 ms gap between codes (same as Bruce)
+// Pause between codes. Same value Bruce uses - leaves enough room for slow
+// receivers to latch each burst before the next one starts.
+static const uint32_t CODE_GAP_US = 20500;   // ~20 ms
 
-static IRsend *irsend;   // initialized in setup() once the pin is known
+// Built in setup() once we know which pin it's on.
+static IRsend *irsend;
 
-// Bit-compression state used while decoding parsed codes (mirrors Bruce).
+// State for expanding the bit-compressed code entries (copied from Bruce).
 static uint8_t bitsleft_r = 0;
 static uint8_t bits_r     = 0;
 static uint8_t code_ptr   = 0;
 static volatile const IrCode *powerCode = nullptr;
 
+// Pull `count` bits out of the current compressed code, MSB first.
 static uint8_t read_bits(uint8_t count) {
     uint8_t tmp = 0;
     while (count--) {
@@ -51,7 +42,8 @@ static uint8_t read_bits(uint8_t count) {
     return tmp;
 }
 
-// ----------------------------- TX helpers ---------------------------------
+// Expand the "parsed" codes. The stored times are in units of ~10us, so we
+// multiply by 10 to get real microseconds before sending.
 static void sendParsedBatch(const IrCode *const *codes, uint8_t count) {
     static uint16_t rawData[300];
     for (uint8_t i = 0; i < count; i++) {
@@ -63,7 +55,7 @@ static void sendParsedBatch(const IrCode *const *codes, uint8_t count) {
 
         for (uint8_t k = 0; k < numpairs; k++) {
             uint16_t ti = (read_bits(bitcompression)) * 2;
-            rawData[k * 2]       = powerCode->times[ti] * 10;     // x10 -> microseconds
+            rawData[k * 2]       = powerCode->times[ti] * 10;
             rawData[(k * 2) + 1] = powerCode->times[ti + 1] * 10;
         }
 
@@ -73,6 +65,7 @@ static void sendParsedBatch(const IrCode *const *codes, uint8_t count) {
     }
 }
 
+// Same idea but these entries already store raw microsecond timings.
 static void sendRawBatch(const RawIrCode *const *codes, uint8_t count) {
     static uint16_t rawData[300];
     for (uint8_t i = 0; i < count; i++) {
@@ -81,7 +74,7 @@ static void sendRawBatch(const RawIrCode *const *codes, uint8_t count) {
         const uint8_t numpairs = rc->numpairs;
 
         for (uint8_t k = 0; k < numpairs; k++) {
-            rawData[k * 2]       = (uint16_t)rc->times[k * 2];      // already in microseconds
+            rawData[k * 2]       = (uint16_t)rc->times[k * 2];
             rawData[(k * 2) + 1] = (uint16_t)rc->times[(k * 2) + 1];
         }
 
@@ -90,29 +83,25 @@ static void sendRawBatch(const RawIrCode *const *codes, uint8_t count) {
     }
 }
 
+// Fire everything: EU set first (closest to what we'll actually hit), then the
+// universal parsed codes (TVs + a few projector variants), then the small raw
+// bucket that catches strays like generic "most TVs" and Xiaomi.
 static void runAll() {
-    // EU power-off codes first (Polska/Europe), then the universal parsed set
-    // (Samsung/LG/NEC/RCA/Pioneer + LG-projector / NEC-projector variants),
-    // then the small raw set that adds projector on/off/menu, generic "most
-    // TVs", Xiaomi etc. for any device that only responds to a raw burst.
     sendParsedBatch(EUpowerCodes, num_EUcodes);
     sendParsedBatch(UniversalParsedCodes, num_UniversalParsedCodes);
     sendRawBatch(UniversalRawCodes, num_UniversalRawCodes);
 }
 
-// ----------------------------- Setup / Loop --------------------------------
 void setup() {
     pinMode(GPIO_IR, OUTPUT);
     digitalWrite(GPIO_IR, LOW);
-    irsend = new IRsend((uint16_t)GPIO_IR);
-    // No need to call enableIROut(): sendRaw(freq) sets the carrier per code.
+    irsend = new IRsend((uint16_t)GPIO_IR);   // sendRaw sets the carrier per code
 
     runAll();
 }
 
-// One-shot: after the blast completes, park in deep sleep until power is cut
-// (or re-applied). This keeps battery draw ~0 while "done" and gives you a
-// clean reset path: flip the switch OFF then ON to run again.
+// One-shot: once the blast is done just sleep. Draw drops to basically zero so
+// the battery holds until you flip the switch off and on again to re-run it.
 void loop() {
-    esp_deep_sleep_start();   // never returns; we're done for this power cycle
+    esp_deep_sleep_start();   // doesn't come back until power cycles
 }
