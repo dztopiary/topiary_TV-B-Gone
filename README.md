@@ -34,7 +34,7 @@ No infinite loop.
 |------|-------|
 | [ESP32-S3 SuperMini](https://pl.aliexpress.com/item/1005007785809540.html?spm=a2g0o.productlist.main.1.769140e8KOVg7V&algo_pvid=1b146db2-84cd-485e-96e5-d13d6452b04d&pdp_ext_f=%7B%22order%22%3A%2213116%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007785809540%7C_p_origin_prod%3A) | Main board |
 | [940 nm high-power IR LED module (1 W / 3 W), 3-pin: 5V / GND / Signal](https://pl.aliexpress.com/item/1005008385148583.html?spm=a2g0o.productlist.main.9.17dd22bb0Pn9Io&algo_pvid=b943cf68-5f76-4bbb-88b4-63199276b95f&pdp_ext_f=%7B%22order%22%3A%22358%22%2C%22spu_best_type%22%3A%22price%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005008385148583%7C_p_origin_prod%3A)| The emitter |
-| Battery + on/off switch | Powers everything; the switch is your button |
+| Battery + tp4056 + converter step up 5v + on/off switch | power supply |
 
 Wiring:
 
