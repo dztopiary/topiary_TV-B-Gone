@@ -39,10 +39,10 @@ static void ledSet(uint8_t r, uint8_t g, uint8_t b) {
     neopixelWrite(LED_PIN, r, g, b);
 }
 
-// Green while transmitting - looks intentional, not just "on".
-static const uint8_t LED_R_ACTIVE = 0;
-static const uint8_t LED_G_ACTIVE =  255;
-static const uint8_t LED_B_ACTIVE = 0;
+// Purple while transmitting - looks intentional, not just "on".
+static const uint8_t LED_R_ACTIVE = 160;
+static const uint8_t LED_G_ACTIVE =  40;
+static const uint8_t LED_B_ACTIVE = 255;
 
 // Red for "done" - visible but not harsh.
 static const uint8_t LED_R_DONE = 255;
