@@ -92,16 +92,26 @@ static void runAll() {
     sendRawBatch(UniversalRawCodes, num_UniversalRawCodes);
 }
 
+// One-shot: fire all codes, then drop into deep sleep. Draw goes basically to
+// zero so the battery just sits there until you flip the switch off/on again.
+static void runBlastAndSleep() {
+    if (irsend) {
+        irsend->enableIROut(38000);   // warm up the RMT driver with a default carrier
+    }
+    runAll();
+    esp_deep_sleep_start();           // no wake source, so it stays asleep until power cycle
+}
+
 void setup() {
     pinMode(GPIO_IR, OUTPUT);
     digitalWrite(GPIO_IR, LOW);
     irsend = new IRsend((uint16_t)GPIO_IR);   // sendRaw sets the carrier per code
 
-    runAll();
+    runBlastAndSleep();
 }
 
-// One-shot: once the blast is done just sleep. Draw drops to basically zero so
-// the battery holds until you flip the switch off and on again to re-run it.
+// Never actually reached - deep sleep keeps us here. Kept so the Arduino sketch
+// contract still has a loop().
 void loop() {
-    esp_deep_sleep_start();   // doesn't come back until power cycles
+    esp_deep_sleep_start();
 }
