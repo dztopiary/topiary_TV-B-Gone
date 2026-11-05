@@ -39,15 +39,15 @@ static void ledSet(uint8_t r, uint8_t g, uint8_t b) {
     neopixelWrite(LED_PIN, r, g, b);
 }
 
-// Purple while transmitting - looks intentional, not just "on".
-static const uint8_t LED_R_ACTIVE = 160;
-static const uint8_t LED_G_ACTIVE =  40;
-static const uint8_t LED_B_ACTIVE = 255;
+// Green while transmitting - looks intentional, not just "on".
+static const uint8_t LED_R_ACTIVE = 0;
+static const uint8_t LED_G_ACTIVE =  255;
+static const uint8_t LED_B_ACTIVE = 0;
 
-// Soft red for "done" - visible but not harsh.
-static const uint8_t LED_R_DONE = 220;
-static const uint8_t LED_G_DONE =  30;
-static const uint8_t LED_B_DONE =  30;
+// Red for "done" - visible but not harsh.
+static const uint8_t LED_R_DONE = 255;
+static const uint8_t LED_G_DONE =  0;
+static const uint8_t LED_B_DONE =  0;
 
 // Fade the LED to black over ~400 ms so it doesn't just snap off.
 static void ledFadeOut() {
